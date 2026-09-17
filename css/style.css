@@ -1,0 +1,75 @@
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    /* Prevent text selection in some interactive areas if needed */
+}
+
+/* Custom Scrollbar for Chat Box */
+#chatBox::-webkit-scrollbar {
+    width: 8px;
+}
+#chatBox::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 4px;
+}
+#chatBox::-webkit-scrollbar-thumb {
+    background: #fbd38d; /* yellow-300 */
+    border-radius: 4px;
+}
+#chatBox::-webkit-scrollbar-thumb:hover {
+    background: #f6ad55; /* orange-400 */
+}
+
+/* Message Animations */
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.msg-animate {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Loader Animation */
+.dot-flashing {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9ca3af;
+    color: #9ca3af;
+    animation: dot-flashing 1s infinite linear alternate;
+    animation-delay: 0.5s;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+.dot-flashing::before, .dot-flashing::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+}
+.dot-flashing::before {
+    left: -15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9ca3af;
+    color: #9ca3af;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 0s;
+}
+.dot-flashing::after {
+    left: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9ca3af;
+    color: #9ca3af;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 1s;
+}
+
+@keyframes dot-flashing {
+    0% { background-color: #9ca3af; }
+    50%, 100% { background-color: #e5e7eb; }
+}

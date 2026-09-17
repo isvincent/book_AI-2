@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>說書人 x AI 學習空間</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body class="bg-blue-50 font-sans text-gray-800">
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-orange-400 to-yellow-400 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wider"><i class="fas fa-book-reader mr-2"></i>AI 說書人學習空間</h1>
+            <div>
+                <button id="loginBtn" class="bg-white text-orange-500 font-bold py-2 px-4 rounded-full shadow hover:bg-orange-100 transition-all transform hover:scale-105" onclick="simulateLogin()">
+                    <i class="fab fa-google mr-2"></i>使用 Google 登入
+                </button>
+                <div id="userInfo" class="hidden flex items-center space-x-3">
+                    <img src="https://ui-avatars.com/api/?name=Student&background=random" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white">
+                    <span class="font-bold text-lg hidden sm:block">嗨，同學！</span>
+                    <button class="bg-red-500 text-white font-bold py-1 px-3 rounded shadow hover:bg-red-600 transition-all text-sm" onclick="logout()">登出</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6 opacity-50 pointer-events-none transition-opacity duration-500">
+        
+        <!-- Left Column: Video & Notes -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Video Player -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border-4 border-orange-300">
+                <div class="bg-orange-100 px-4 py-3 border-b-2 border-orange-200 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-orange-800"><i class="fab fa-youtube text-red-500 mr-2"></i>說書人影音選集</h2>
+                </div>
+                <!-- 16:9 Aspect Ratio Container -->
+                <div class="relative w-full" style="padding-bottom: 56.25%;">
+                    <div id="player" class="absolute top-0 left-0 w-full h-full"></div>
+                </div>
+            </div>
+
+            <!-- Learning History -->
+            <div class="bg-white rounded-2xl shadow-xl p-5 border-4 border-blue-300">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-blue-800"><i class="fas fa-history mr-2"></i>我的學習筆記</h2>
+                    <button class="bg-blue-500 text-white font-bold py-1 px-3 rounded shadow hover:bg-blue-600 transition-all text-sm" onclick="addNote()">
+                        <i class="fas fa-plus mr-1"></i>新增心得
+                    </button>
+                </div>
+                <ul id="notesList" class="space-y-2 text-lg">
+                    <li class="text-gray-500 italic">尚無筆記，點擊「新增心得」來記錄你的想法吧！</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Column: AI Chat -->
+        <div class="bg-white rounded-2xl shadow-xl flex flex-col h-[80vh] border-4 border-yellow-300">
+            <div class="bg-gradient-to-r from-yellow-300 to-yellow-400 px-4 py-3 rounded-t-xl flex justify-between items-center shadow">
+                <h2 class="text-xl font-bold text-yellow-900"><i class="fas fa-robot text-blue-600 mr-2"></i>AI 說書助教</h2>
+                <button class="text-yellow-900 hover:text-white transition-colors" onclick="downloadWord()" title="下載為 Word">
+                    <i class="fas fa-file-word text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50">
+                <!-- Welcome Message -->
+                <div class="flex items-start">
+                    <div class="bg-blue-100 rounded-lg p-3 max-w-[80%] shadow-sm rounded-tl-none border border-blue-200">
+                        <p class="text-lg">哈囉！我是你的 AI 說書助教。有任何關於影片或是書本內容的問題，都可以隨時問我喔！📝</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 bg-white border-t-2 border-gray-100 rounded-b-xl">
+                <div class="flex space-x-2">
+                    <input type="text" id="userInput" class="flex-1 border-2 border-yellow-300 rounded-full px-4 py-2 focus:outline-none focus:border-yellow-500 text-lg transition-colors" placeholder="輸入你想問的問題..." onkeypress="handleKeyPress(event)">
+                    <button class="bg-yellow-400 text-yellow-900 font-bold rounded-full w-12 h-12 flex items-center justify-center shadow hover:bg-yellow-500 transition-all transform hover:scale-105" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Audio Elements for Sound Effects -->
+    <audio id="clickSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg"></audio>
+    <audio id="chimeSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+    <audio id="successSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
